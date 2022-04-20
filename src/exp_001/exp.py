@@ -1,5 +1,6 @@
 from inspect import trace
 from re import sub
+import sys
 import lightgbm as lgb
 import joblib
 import numpy as np
@@ -10,23 +11,25 @@ import gc
 import os
 
 from preprocess import get_data
+sys.path.append('../')
 from utils import rmse, make_dirs, decorate, send_start_log, send_end_log, send_error_log
 
+from path_info import SAVE_PATH, MLFLOW_PATH
 
-SAVE_PATH = '../save/'
+mlflow.set_tracking_uri(MLFLOW_PATH)
 
 cfg = {
     'name': 'exp001',
     'n_splits': 5,
     'seed': 55,
     'experiment_id': 0,
-    'debug': False,
+    'debug': True,
 
     'lgbm_params' : {
         'objective': 'regression', 
         'metric': 'rmse', 
         'boosting_type': 'gbdt',
-        'learning_rate': 0.05,
+        'learning_rate': 0.1,
         'seed': 55,
         'max_depth': 8,
         'early_stopping_rounds': 50,
@@ -35,12 +38,13 @@ cfg = {
 }
 
 def main():
-    save_path = os.path.join(SAVE_PATH, cfg['name'])
-    make_dirs(save_path)
-
     if cfg['debug']:
         cfg['n_splits'] = 2
         cfg['lgbm_params']['n_estimators'] = 10
+        cfg['name'] = 'debug'
+
+    save_path = os.path.join(SAVE_PATH, cfg['name'])
+    make_dirs(save_path)
 
     X_train, y_train, X_test, submit = get_data()
 
@@ -50,7 +54,7 @@ def main():
     kf = KFold(cfg['n_splits'], shuffle=True, random_state=cfg['seed'])
     print(decorate('train start'))
     for i, (trn_idx, val_idx) in enumerate(kf.split(X_train)):
-        with mlflow.start_run(experiment_id=cfg['experiment_id'], nested=True):
+        with mlflow.start_run(experiment_id=cfg['experiment_id'], nested=True, ):
             train_dataset = lgb.Dataset(X_train.loc[trn_idx], y_train.loc[trn_idx])
             valid_dataset = lgb.Dataset(X_train.loc[val_idx], y_train.loc[val_idx])
 

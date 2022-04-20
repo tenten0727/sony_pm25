@@ -2,9 +2,11 @@ from xml.etree.ElementInclude import include
 import pandas as pd
 import numpy as np
 import sys
-sys.path.append('../src')
-from sony_pm25_utils import read_data
+import os
+
+sys.path.append('../')
 from utils import AbstractBaseBlock, run_blocks, Timer
+from path_info import DATA_PATH
 
 class NumericBlock(AbstractBaseBlock):
     def transform(self, df):
@@ -12,6 +14,12 @@ class NumericBlock(AbstractBaseBlock):
 
         return df[num_cols].copy()
 
+def read_data():
+    train = pd.read_csv(os.path.join(DATA_PATH, 'train.csv'))
+    test = pd.read_csv(os.path.join(DATA_PATH, 'test.csv'))
+    submit = pd.read_csv(os.path.join(DATA_PATH, 'submit_sample.csv'), header=None).rename(columns={0:'id', 1:'pm25_mid'})
+
+    return train, test, submit
 
 def create_feature(df_train, df_test):
     y = df_train['pm25_mid']
