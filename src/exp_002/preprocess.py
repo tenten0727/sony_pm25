@@ -36,13 +36,13 @@ class TargetEncodingBlock(AbstractBaseBlock):
 
         return output_df
 
-
+class CategoricalBlock(AbstractBaseBlock):
+    def __init__(self, cols):
+        self.cols = cols
+        
     def transform(self, input_df):
-        output_df = input_df[self.cols]
-        for col in self.cols:
-            output_df[col] = output_df[col].map(self.test_TE[col]).astype(float)
-
-        return output_df
+        category_df = input_df[self.cols].astype('category')
+        return category_df
 
 def read_data():
     train = pd.read_csv(os.path.join(DATA_PATH, 'train.csv'))
@@ -56,7 +56,8 @@ def create_feature(df_train, df_test):
 
     feature_blocks = [
         NumericBlock(),
-        TargetEncodingBlock(['Country'])
+        TargetEncodingBlock(['Country']),
+        # CategoricalBlock(['Country'])
     ]
     df_train_feat = run_blocks(df_train.drop('pm25_mid', axis=1), feature_blocks, y)
     df_test_feat = run_blocks(df_test, feature_blocks, test=True)

@@ -83,6 +83,7 @@ def main():
     submit['pm25_mid'] /= cfg['n_splits']
 
     submit.to_csv(os.path.join(save_path, 'submit.csv'), header=False, index=False)
+    mlflow.log_artifact(os.path.join(save_path, 'submit.csv'))
     
     send_end_log(cfg['name'])
 
