@@ -19,7 +19,7 @@ from path_info import SAVE_PATH, MLFLOW_PATH
 mlflow.set_tracking_uri(MLFLOW_PATH)
 
 cfg = {
-    'name': 'exp002',
+    'name': 'exp003',
     'n_splits': 5,
     'seed': 55,
     'experiment_id': 0,
@@ -75,8 +75,11 @@ def main():
             gc.collect()
     
     oof = np.expm1(oof)
+    oof[oof < 0] = 0
     val_score = rmse(y_train, oof)
     mlflow.log_metric('val_rmse', val_score)
+    oof.to_csv(os.path.join(save_path, 'oof.csv'), header=False, index=False)
+    mlflow.log_artifact(os.path.join(save_path, 'oof.csv'))
 
     print(decorate('test start'))
     submit['pm25_mid'] = 0
@@ -84,6 +87,7 @@ def main():
         submit['pm25_mid'] += model.predict(X_test)
     submit['pm25_mid'] /= cfg['n_splits']
     submit['pm25_mid'] = np.expm1(submit['pm25_mid'])
+    submit[submit['pm25_mid'] < 0] = 0
 
     submit.to_csv(os.path.join(save_path, 'submit.csv'), header=False, index=False)
     mlflow.log_artifact(os.path.join(save_path, 'submit.csv'))
