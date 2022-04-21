@@ -52,9 +52,11 @@ def main():
     oof = pd.Series(np.zeros(y_train.shape))
     models = []
 
-    kf = GroupKFold(cfg['n_splits'])
+    cv = X_train.pop('fold')
     print(decorate('train start'))
-    for i, (trn_idx, val_idx) in enumerate(kf.split(X_train, y_train, group)):
+    for i in range(cv.nunique()):
+        trn_idx = X_train[cv != i].index
+        val_idx = X_train[cv == i].index
         with mlflow.start_run(experiment_id=cfg['experiment_id'], nested=True, ):
             train_dataset = lgb.Dataset(X_train.loc[trn_idx], y_train.loc[trn_idx])
             valid_dataset = lgb.Dataset(X_train.loc[val_idx], y_train.loc[val_idx])
