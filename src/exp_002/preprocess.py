@@ -36,6 +36,12 @@ class TargetEncodingBlock(AbstractBaseBlock):
 
         return output_df
 
+    def transform(self, input_df):
+        output_df = input_df[self.cols]
+        for col in self.cols:
+            output_df[col] = output_df[col].map(self.test_TE[col])
+        return output_df
+
 class CategoricalBlock(AbstractBaseBlock):
     def __init__(self, cols):
         self.cols = cols
