@@ -20,6 +20,7 @@ mlflow.set_tracking_uri(MLFLOW_PATH)
 
 cfg = {
     'name': 'exp004',
+    'sub_name': '+agg',
     'n_splits': 5,
     'seed': 55,
     'experiment_id': 0,
@@ -44,7 +45,7 @@ def main():
         cfg['name'] = 'debug'
     send_start_log(cfg['name'])
 
-    save_path = os.path.join(SAVE_PATH, cfg['name'])
+    save_path = os.path.join(SAVE_PATH, cfg['name'], cfg['sub_name'])
     make_dirs(save_path)
 
     X_train, y_train, group, X_test, submit = get_data()
