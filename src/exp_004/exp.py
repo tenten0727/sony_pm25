@@ -20,7 +20,7 @@ mlflow.set_tracking_uri(MLFLOW_PATH)
 
 cfg = {
     'name': 'exp004',
-    'sub_name': '+agg',
+    'sub_name': '+date_feature',
     'n_splits': 5,
     'seed': 55,
     'experiment_id': 0,
