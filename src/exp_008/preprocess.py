@@ -143,7 +143,7 @@ class AggBlock(AbstractBaseBlock):
 
         return output_df.drop(self.group, axis=1)
 
-class LagLeadBlock(AbstractBaseBlock):
+class YLagLeadBlock(AbstractBaseBlock):
     def __init__(self, groups, lag=1):
         self.groups = groups
         self.lag = lag
@@ -208,7 +208,7 @@ def create_feature(df_train, df_test):
     df_test_feat = pd.concat(df_test_feat, axis=1)
 
     second_feature_blocks = [
-        *[LagLeadBlock(['Country', 'date'], lag=i) for i in [-10, -7, -3, -2, -1, 1, 2, 3, 7, 10]],
+        *[YLagLeadBlock(['Country', 'date'], lag=i) for i in [-10, -7, -3, -2, -1, 1, 2, 3, 7, 10]],
         *[TargetEncodingBlock(['month', 'Country', 'dayofweek', 'is_holiday'], df_train['fold'], agg) for agg in ['mean', 'std']],
         CountEncodingBlock(['year', 'month', 'day', 'Country', 'dayofweek']),
         # *[AggBlock(group, ['co_mid', 'o3_mid', 'so2_mid', 'no2_mid']) for group in ['date']],
