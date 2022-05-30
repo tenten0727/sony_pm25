@@ -7,3 +7,4 @@ path_info.py
 __pycache__
 .python-version
 .vscode
+catboost_info
