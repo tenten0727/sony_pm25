@@ -20,7 +20,7 @@ from path_info import SAVE_PATH, MLFLOW_PATH
 mlflow.set_tracking_uri(MLFLOW_PATH)
 
 cfg = {
-    'name': 'exp014',
+    'name': 'exp018',
     'sub_name': 'none',
     'n_splits': 5,
     'seed': 55,
