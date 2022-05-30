@@ -237,10 +237,11 @@ def read_data():
 
     return train, test, submit
 
-def create_feature(df_train, df_test):
+def create_feature(cfg, df_train, df_test):
+    print(cfg)
     y = df_train['pm25_mid']
 
-    kf = KFold(n_splits=5, shuffle=True, random_state=55)
+    kf = KFold(n_splits=cfg['n_splits'], shuffle=True, random_state=cfg['seed'])
     df_train['fold'] = -1
     group = pd.Series(df_train['City'].unique())
     for i, (_, val_group) in enumerate(kf.split(group.index)):
@@ -295,11 +296,11 @@ def create_feature(df_train, df_test):
 
     return df_train_feat, df_test_feat
 
-def get_data():
+def get_data(cfg):
     df_train, df_test, submit = read_data()
     df_train = df_train[~df_train['City'].isin(['Ürümqi', 'Novosibirsk', 'Darwin', 'Perth'])].reset_index(drop=True)
 
-    df_train_feat, df_test_feat = create_feature(df_train, df_test)
+    df_train_feat, df_test_feat = create_feature(cfg, df_train, df_test)
     y = df_train['pm25_mid']
     group = df_train['City']
 

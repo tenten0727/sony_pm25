@@ -64,7 +64,7 @@ def main():
     save_path = os.path.join(SAVE_PATH, cfg['name'], cfg['sub_name'])
     make_dirs(save_path)
 
-    X_train, y_train, group, X_test, submit = get_data()
+    X_train, y_train, group, X_test, submit = get_data(cfg)
 
     oof = pd.Series(np.zeros(y_train.shape))
     models = []
