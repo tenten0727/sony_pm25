@@ -246,8 +246,11 @@ class KnnLocationDateBlock(AbstractBaseBlock):
         # output_df[['lat', 'lon', 'date_label']] = self.num_ss.transform(output_df[['lat', 'lon', 'date_label']])
         output_df['date_label'] = output_df['date_label'] * self.time_extend
         output_df[self.col_name] = self.test_knn.predict(output_df[['lat', 'lon', 'date_label']])
+        output_df[self.col] = input_df[self.col]
 
-        return output_df[[self.col_name]]
+        output_df['diff_'+self.col_name] = output_df[self.col_name] - output_df[self.col]
+
+        return output_df[[self.col_name, 'diff_'+self.col_name]]
 
 def read_data():
     train = pd.read_csv(os.path.join(DATA_PATH, 'train.csv'))
